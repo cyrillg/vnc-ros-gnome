@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+echo -n "Are you sure you want to reset the sr-docker container? (y/n) "
+read res
+
+if [[ "$res" != "y" ]]; then
+    echo "Cancelled"
+    exit 0
+fi
+
+inst=`docker ps -a --filter=name=sr-docker --format "{{.ID}}"`
+if [[ -z "$inst" ]]; then
+    echo "No container to reset."
+    exit 1
+fi
+
+echo "Deleting sr-docker container..."
+echo -n " -> "
+docker rm sr-docker
+
+sr-cli create ${1-}
+

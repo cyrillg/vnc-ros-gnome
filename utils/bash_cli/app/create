@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+ROS_WS=/home/serial/ros_ws
+HOST_WS_DEFAULT=`pwd`
+HOST_WS="${1-$HOST_WS_DEFAULT}"
+
+if [[ ! -f "$HOST_WS/.catkin_workspace" ]]; then
+    echo "The current directory is not a catkin workspace."
+    echo "Please verify the path"
+    exit 2
+fi
+
+img_name=`docker images --filter=reference=sr-dev --format "{{.Repository}}"`
+if [[ -z "$img_name" ]]; then
+    echo "Cannot find the image locally. Please:"
+    echo "  - go to the root of the image definition"
+    echo "  - run: sr-cli build"
+    exit 1
+else
+    echo "Creating sr-docker container..."
+    echo -n " -> "
+    docker create \
+            -p 5900:5900 \
+            -p 12321:22 \
+            --volume=$HOST_WS:$ROS_WS:rw \
+            --name sr-docker \
+            sr-dev
+fi
+

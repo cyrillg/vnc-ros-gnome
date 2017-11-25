@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ -f "Dockerfile" ]]; then
+    docker build . -t sr-dev
+else
+    echo "This directory does not contain a Dockerfile. Please:"
+    echo "  - go to the root of the image definition"
+    echo "  - run this command again"
+    exit 1
+fi
+

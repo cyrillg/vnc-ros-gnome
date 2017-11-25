@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+cd $ROS_WS_PATH
+rosdep fix-permissions
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+

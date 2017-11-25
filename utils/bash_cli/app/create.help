@@ -1,0 +1,6 @@
+PATH  - (Optional) Path to the ROS workspace to mount. Must be absolute.
+        Default: . (current folder)
+        Example: /home/username/my_ws
+
+Create a container from the sr-dev docker image.
+

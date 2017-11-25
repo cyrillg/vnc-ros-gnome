@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+echo -n "Are you sure you want to delete the sr-dev image? (y/n) "
+read res
+
+if [[ "$res" != "y" ]]; then
+    echo "Cancelled"
+fi
+
+inst=`docker ps -a --filter=name=sr-docker --format "{{.Names}}"`
+if [[ -z "$inst" ]]; then
+    echo "No container to reset."
+    exit 1
+fi
+
+echo "Deleting sr-docker container..."
+docker rm sr-docker
+
+echo "Deleting sr-dev image..."
+docker rmi sr-dev
+
