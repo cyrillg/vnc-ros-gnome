@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 MAINTAINER Cyrill Guillemot "https://github.com/cyrillg"
 
+ARG user=serial
+ENV USER=$user
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install ROS
@@ -34,8 +37,9 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 
 # Environment variables
-ENV DISPLAY=:1 USER=serial TERM=xterm-color
-ENV HOME /home/$USER
+ENV DISPLAY=:1 \
+    TERM=xterm-256color \
+    HOME=/home/$USER
 
 # Configure user
 RUN groupadd $USER && \
@@ -47,7 +51,6 @@ RUN groupadd $USER && \
 # Add files
 WORKDIR $HOME
 RUN mkdir ros_ws && \
-    mkdir .gazebo && \
     mkdir -p ./.config/nautilus && \
     mkdir -p /var/log/supervisor && \
     curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > .git-prompt.bash && \
@@ -57,23 +60,17 @@ COPY ["files/.bashrc", \
       "files/.vimrc", \
       "files/autumn.jpg", \
       "files/init_ros", "./"]
-COPY files/.gazebo .gazebo
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set user and group ownership
-RUN chown -R serial:serial . && \
+RUN chown -R $USER:$USER . && \
     chmod +x init_ros
 
-# WHEN THE SETUP IS STABLE, THIS WILL NEED TO BE OUTSIDE OF THE IMAGE,
-# SINCE IT BELONGS TO THE APPLICATION
-RUN apt-get install -y ros-kinetic-gazebo-ros-pkgs
-#        ros-kinetic-ros-control \
-#        ros-kinetic-ros-controllers \
-#        ros-kinetic-teleop-twist-keyboard \
+USER $USER
+RUN rosdep fix-permissions && rosdep update
 
-# Install ROS dependencies
-
-EXPOSE 22 5900
+USER root
+EXPOSE 5900
 
 CMD    ["/usr/bin/supervisord"]
 
