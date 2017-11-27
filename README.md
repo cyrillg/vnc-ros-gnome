@@ -9,7 +9,7 @@ You can run it with:
 ```bash
 docker run -p 5900:5900 \
             --volume=ROS-WS-ABS-PATH:/home/serial/ros_ws:rw \
-            --name sr-docker
+            --name sr-docker \
             cyrillg/vnc-ros-gnome
 ```
 
