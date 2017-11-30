@@ -1,26 +1,63 @@
 # VNC, ROS and Gnome
 
-This repository defines a docker image based on Ubuntu 16.04, packed with ROS Kinetic and a Gnome GUI through VNC.
-It was put together to give readers of [Serial Robotics](https://serial-robotics.org) a ready-to-use environment for the [ros-playground](https://github.com/cyrillg/ros-playground) ROS workspace.
-However it is fairly generic and can easily be used as a plug-and-play for any ROS project.
+Docker image based on Ubuntu 16.04, packed with ROS Kinetic and a Gnome GUI through VNC. It is meant as a plug-and-play for any ROS workspace, allowing the ease of use of Docker _and_ a GUI, often required for comfortable ROS development.
 
-You can run it with:
+## Default image
+
+If your ROS repo is in `/home/my_user/my_repo`, you can run the default image with only:
 
 ```bash
 docker run -p 5900:5900 \
-            --volume=ROS-WS-ABS-PATH:/home/serial/ros_ws:rw \
-            --name sr-docker \
-            cyrillg/vnc-ros-gnome
+           --volume=/home/my_user/my_repo:/home/serial/ros_ws:rw \
+           --name ros-container \
+           cyrillg/vnc-ros-gnome
 ```
+
+It will automatically pull `cyrillg/vnc-ros-gnome` image from docker-hub. 
 
 Once your container is running, you can connect to the desktop with RealVNC, VNC client available as a Chrome extension (other VNC clients might do, but this one has been proven to work). The address is `localhost:5900`.
 
-You can also have access inside the container through:
+Note that at the time I write this the shell is not functional through the GUI. You can however access it through:
 
 ```bash
-docker exec -it -u serial sr-docker "/bin/bash"
+docker exec -it -u serial ros-container "/bin/bash"
 ```
 
-Coming soon:
-* Installation guide
-* Usage guide
+## Custom build
+
+Alternatively, the image can be rebuilt with a username different from the default _serial_. To that effect:
+
+```bash
+# Clone this repo
+git clone https://github.com/cyrillg/vnc-ros-gnome.git
+
+cd vnc-ros-gnome/
+
+# Replacing <image-name> and <my-user> by your own choices
+docker build . -t <image-name> --build-arg user=<my-user>
+```
+
+The same way as for the default image, if your ROS repo is in `/home/my_user/my_repo`, you can run this newly built image with:
+
+```bash
+docker run -p 5900:5900 \
+           --volume=/home/my_user/my_repo:/home/serial/ros_ws:rw \
+           --name ros-container \
+           <image-name>
+```
+
+You can also start an interactive shell within the container under your user account with:
+
+```bash
+docker exec -it -u <my-user> ros-container "/bin/bash"
+```
+
+## sr-dev
+
+The vnc-ros-gnome image was created while developing the [sr-dev image](https://github.com/cyrillg/sr-dev), meant to give readers of [Serial Robotics](https://serial-robotics.org) a ready-to-use environment for the [ros-playground](https://github.com/cyrillg/ros-playground) ROS workspace. 
+
+You might be interested in taking a look at how it builds on top of the _vnc-ros-gnome_ image, and how you can use it to easily create an environment tailored to your particular ROS project.
+
+Another advantage of the sr-dev for those not familiar with docker is that it can be managed with the [sr-cli command-line interface](https://github.com/cyrillg/sr-cli). See the github page for more info as well as a demo.
+
+
