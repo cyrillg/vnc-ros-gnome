@@ -70,24 +70,24 @@ if [ "$color_prompt" = yes ]; then
     RESET_ALL="\e[0m"
     RESET_BOLD="\e[21m"
 
-    function git_warning {
-      local git_status="$(git status 2> /dev/null)"
+    #function git_warning {
+    #  local git_status="$(git status 2> /dev/null)"
 
-      if [[ ! $git_status == "" ]]; then
-          if [[ ! $git_status =~ "working directory clean" ]]; then
-            echo " [*]"
-          elif [[ $git_status =~ "Your branch is ahead of" ]]; then
-            echo " [*]"
-          fi
-      fi
-    }
+    #  if [[ ! $git_status == "" ]]; then
+    #      if [[ ! $git_status =~ "working directory clean" ]]; then
+    #        echo " [*]"
+    #      elif [[ $git_status =~ "Your branch is ahead of" ]]; then
+    #        echo " [*]"
+    #      fi
+    #  fi
+    #}
 
     PS1="${debian_chroot:+\($debian_chroot)}"
     PS1+="\[$COLOR_LIGHT_GREEN\][docker] \[$COLOR_DEFAULT_FG\]"
     PS1+="\[$COLOR_BLUE\]\u\[$COLOR_WHITE\]\[$COLOR_DEFAULT_FG\]:"
     PS1+="\[$COLOR_WHITE\]\w\[$COLOR_DEFAULT_FG\]"          # basename of pwd
-    PS1+="\[$COLOR_YELLOW\]\$(__git_ps1 ' (%s)')\[$COLOR_DEFAULT_FG\]"           # prints current branch
-    PS1+="\[$COLOR_RED\]\$(git_warning)\[$COLOR_DEFAULT_FG\]"
+    #PS1+="\[$COLOR_YELLOW\]\$(__git_ps1 ' (%s)')\[$COLOR_DEFAULT_FG\]"           # prints current branch
+    #PS1+="\[$COLOR_RED\]\$(git_warning)\[$COLOR_DEFAULT_FG\]"
     PS1+=" \[$COLOR_BLUE\]\$\[$COLOR_DEFAULT_FG\]\[$RESET_BOLD\] "   # '#' for root, else '$'
     export PS1
 else
@@ -150,12 +150,9 @@ fi
 
 LC_ALL=C
 LANG=C
-DISPLAY=:1
-QT_X11_NO_MITSHM=1
 ROS_WS_PATH=~/ros_ws
-export LC_ALL LANG DISPLAY QT_X11_NO_MITSHM ROS_WS_PATH
+export LC_ALL LANG ROS_WS_PATH
 
-source ~/.git-prompt.bash
 source /opt/ros/kinetic/setup.bash
-source ~/ros_ws/devel/setup.bash
+#source ~/ros_ws/devel/setup.bash
 
